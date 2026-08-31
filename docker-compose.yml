@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16
+    container_name: salon-db
+    environment:
+      POSTGRES_DB: salon_booking
+      POSTGRES_USER: salon_user
+      POSTGRES_PASSWORD: salon_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - salon_data:/var/lib/postgresql/data
+
+volumes:
+  salon_data:
