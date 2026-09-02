@@ -1,7 +1,0 @@
-com\barbershop\booking\models\Employee.class
-com\barbershop\booking\models\enums\AppointmentStatus.class
-com\barbershop\booking\models\enums\Role.class
-com\barbershop\booking\SalonBookingSystemApplication.class
-com\barbershop\booking\models\Appointment.class
-com\barbershop\booking\models\User.class
-com\barbershop\booking\models\Schedule.class

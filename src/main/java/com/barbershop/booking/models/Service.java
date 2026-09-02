@@ -33,6 +33,4 @@ public class Service {
     @Column(nullable = false)
     private Integer duration;
 
-    
-    
 }
