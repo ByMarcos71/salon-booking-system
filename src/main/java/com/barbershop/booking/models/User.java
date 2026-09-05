@@ -31,7 +31,6 @@ public class User {
     @Size(min = 3, max = 20)
     private String username;
     @Column(nullable = false)
-    @Size(min = 5, max = 32)
     private String password;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -40,7 +39,6 @@ public class User {
     @Email(message = "Invalid email address")
     private String email;
     @Column(unique = true, nullable = false)
-    @Size(min = 10, max = 15)
     private String phoneNumber;
 
 }
