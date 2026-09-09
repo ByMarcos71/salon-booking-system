@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.barbershop.booking.dtos.RegisterRequest;
+import com.barbershop.booking.dtos.RegisterResponse;
 import com.barbershop.booking.models.User;
 import com.barbershop.booking.models.enums.Role;
 import com.barbershop.booking.repositories.UserRepository;
@@ -44,6 +45,13 @@ public class AuthController {
 
         User registeredUser = userRepository.save(user);
 
-        return ResponseEntity.status(201).body(registeredUser);
+        RegisterResponse response = new RegisterResponse();
+        response.setId(registeredUser.getId());
+        response.setUsername(registeredUser.getUsername());
+        response.setEmail(registeredUser.getEmail());
+        response.setPhoneNumber(registeredUser.getPhoneNumber());
+
+        return ResponseEntity.status(201).body(response);
+
     }
 }
