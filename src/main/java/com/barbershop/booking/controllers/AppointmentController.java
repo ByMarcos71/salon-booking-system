@@ -57,16 +57,15 @@ public class AppointmentController {
 
         List<Service> services = serviceRepository.findAllById(request.getServiceIds());
 
-        // TODO 1
         int duration = 0;
         for (Service service : services) {
             duration += service.getDuration();
         }
-        // TODO 2
+
         if (!(bookingService.isAvailable(employee, request.getDateTime(), duration))) {
             return ResponseEntity.status(409).body("slot not avaliable");
         }
-        // TODO 3
+
         Appointment appointment = new Appointment();
         appointment.setDateTime(request.getDateTime());
         appointment.setEmployee(employee);
@@ -74,7 +73,6 @@ public class AppointmentController {
         appointment.setStatus(AppointmentStatus.PENDING);
         appointmentRepository.save(appointment);
 
-        // TODO 4
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
         for (Service service : services) {
@@ -84,7 +82,6 @@ public class AppointmentController {
             appointmentServiceRepository.save(appointmentService);
         }
 
-        // TODO 5
         AppointmentResponse response = new AppointmentResponse();
         response.setId(savedAppointment.getId());
         response.setEmployeeName(employee.getName());

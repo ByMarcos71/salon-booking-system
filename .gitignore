@@ -32,3 +32,5 @@ target/
 # Maven build artifacts sometimes generated outside target/
 inputFiles.lst
 createdFiles.lst
+
+.env
