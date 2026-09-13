@@ -9,7 +9,6 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 
 @Service
 public class JwtService {

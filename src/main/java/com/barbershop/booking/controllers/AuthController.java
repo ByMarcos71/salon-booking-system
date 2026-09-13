@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.barbershop.booking.dtos.LoginRequest;
 import com.barbershop.booking.dtos.RegisterRequest;
 import com.barbershop.booking.dtos.RegisterResponse;
 import com.barbershop.booking.models.User;
 import com.barbershop.booking.models.enums.Role;
 import com.barbershop.booking.repositories.UserRepository;
+import com.barbershop.booking.services.JwtService;
 
 import jakarta.validation.Valid;
 
@@ -21,10 +23,12 @@ import jakarta.validation.Valid;
 public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/register")
@@ -54,4 +58,26 @@ public class AuthController {
         return ResponseEntity.status(201).body(response);
 
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+
+        // 1. Busca el User por username (Optional, ya sabes cómo)
+        Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
+
+        // 2. Si el Optional está vacío -> devuelve 401 con el mensaje genérico
+        if (!userOpt.isPresent()) {
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
+
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
+        String token = jwtService.generateToken(user.getUsername());
+
+        return ResponseEntity.ok(token);
+
+    }
+
 }
