@@ -23,6 +23,14 @@
 hs_err_pid*
 replay_pid*
 
+# Build output
+target/
+
+# Environment variables
+.env
+
+# Maven build artifacts sometimes generated outside target/
 inputFiles.lst
 createdFiles.lst
-target/
+
+.env
