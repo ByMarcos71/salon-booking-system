@@ -62,10 +62,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
 
-        // 1. Busca el User por username (Optional, ya sabes cómo)
         Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
 
-        // 2. Si el Optional está vacío -> devuelve 401 con el mensaje genérico
         if (!userOpt.isPresent()) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
