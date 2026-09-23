@@ -19,9 +19,6 @@ public class CreateAppointmentRequest {
     @NotNull(message = "Employee id is required")
     private Long employeeId;
 
-    @NotNull(message = "User id is required")
-    private Long userId;
-
     @NotNull(message = "Date and time are required")
     @Future(message = "Appointment date must be in the future")
     private LocalDateTime dateTime;

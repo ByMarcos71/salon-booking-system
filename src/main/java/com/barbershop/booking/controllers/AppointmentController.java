@@ -1,8 +1,10 @@
 package com.barbershop.booking.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.barbershop.booking.dtos.AppointmentResponse;
@@ -47,12 +49,15 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createAppointment(@Valid @RequestBody CreateAppointmentRequest request) {
+    public ResponseEntity<?> createAppointment(@Valid @RequestBody CreateAppointmentRequest request,
+            Authentication authentication) {
 
         Employee employee = employeeRepository.findById(request.getEmployeeId())
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-        User user = userRepository.findById(request.getUserId())
+        String username = authentication.getName();
+
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<Service> services = serviceRepository.findAllById(request.getServiceIds());
@@ -71,7 +76,6 @@ public class AppointmentController {
         appointment.setEmployee(employee);
         appointment.setUser(user);
         appointment.setStatus(AppointmentStatus.PENDING);
-        appointmentRepository.save(appointment);
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
@@ -91,6 +95,39 @@ public class AppointmentController {
         response.setServiceNames(services.stream().map(Service::getName).toList());
 
         return ResponseEntity.status(201).body(response);
+    }
+
+    @GetMapping
+    public List<AppointmentResponse> getMyAppointments(Authentication authentication) {
+        String username = authentication.getName();
+
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        User actUser = userOpt.orElseThrow(() -> new RuntimeException("user not found"));
+
+        List<Appointment> userAppointments = appointmentRepository.findByUser(actUser);
+
+        List<AppointmentResponse> responses = userAppointments.stream().map(appointment -> {
+
+            List<AppointmentService> appointmentServices = appointmentServiceRepository.findByAppointment(appointment);
+
+            List<String> serviceNames = appointmentServices.stream()
+                    .map(as -> as.getService().getName())
+                    .toList();
+
+            AppointmentResponse response = new AppointmentResponse();
+            response.setId(appointment.getId());
+            response.setEmployeeName(appointment.getEmployee().getName());
+            response.setUserName(appointment.getUser().getUsername());
+            response.setDateTime(appointment.getDateTime());
+            response.setServiceNames(serviceNames);
+            response.setStatus(appointment.getStatus());
+
+            return response;
+
+        }).toList();
+
+        return responses;
+
     }
 
 }
